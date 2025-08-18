@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('accordion-container');
 
+    // Initial call to fetch data and start the process
     async function initAccordion() {
         try {
             const response = await fetch('data.json');
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (data.length > 0) {
+                // Start the recursive build from the top level
                 buildAccordion(data, container);
                 attachEventListeners();
             } else {
@@ -21,7 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function buildAccordion(items, parentElement) {
+    // --- START VAN DE WIJZIGING ---
+
+    // 2. Recursieve functie om de HTML-structuur op te bouwen, nu met pad-informatie.
+    function buildAccordion(items, parentElement, currentPath = []) {
         if (!items || items.length === 0) {
             return;
         }
@@ -32,7 +37,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const button = document.createElement('button');
             button.className = 'accordion-button';
-            button.textContent = item.title;
+
+            // Creëer het nieuwe pad en de URL
+            const newPath = [...currentPath, item.title];
+            const pathString = newPath.join(' > ');
+            const urlEncodedPath = encodeURIComponent(pathString);
+
+            // Creëer de hyperlink
+            const link = document.createElement('a');
+            link.textContent = item.title;
+            link.href = `topic.html?path=${urlEncodedPath}`;
+
+            // Voeg de link toe aan de knop
+            button.appendChild(link);
 
             const panel = document.createElement('div');
             panel.className = 'accordion-panel';
@@ -41,35 +58,52 @@ document.addEventListener('DOMContentLoaded', () => {
             accordionItem.appendChild(panel);
             parentElement.appendChild(accordionItem);
 
-            // De recursieve aanroep bouwt de volgende laag direct BINNEN het paneel.
+            // De recursieve aanroep met het bijgewerkte pad.
             if (item.children && item.children.length > 0) {
-                buildAccordion(item.children, panel);
+                buildAccordion(item.children, panel, newPath);
             } else {
                 button.classList.add('no-children');
             }
         });
     }
 
+    // 3. Aangepaste event listener om onderscheid te maken tussen klikken.
     function attachEventListeners() {
         container.addEventListener('click', function(event) {
-            const button = event.target.closest('.accordion-button');
-
-            if (!button || button.classList.contains('no-children')) {
+            // Als de gebruiker direct op de link klikt, doe dan niets.
+            // De browser zal de navigatie zelf afhandelen.
+            if (event.target.tagName === 'A') {
+                // We hoeven de accordion niet te togglen.
                 return;
             }
 
-            // Stop het event van opbubbelen om te voorkomen dat bovenliggende
-            // accordeons ook reageren op de klik.
-            event.stopPropagation();
+            const button = event.target.closest('.accordion-button');
 
-            button.classList.toggle('active');
-            const panel = button.nextElementSibling;
-            panel.classList.toggle('is-open');
+            // Als er op de knop (maar niet op de link) is geklikt, toggle de accordeon.
+            if (button && !button.classList.contains('no-children')) {
+                event.preventDefault(); // Voorkom onverwacht gedrag
+                button.classList.toggle('active');
+                const panel = button.nextElementSibling;
+                panel.classList.toggle('is-open');
+            }
         });
     }
 
+    // --- EINDE VAN DE WIJZIGING ---
+
     const style = document.createElement('style');
-    style.textContent = '.accordion-button.no-children::after { content: ""; }';
+    // Voeg stijl toe zodat de link de hele knop vult, maar de plus/min knop apart blijft
+    style.textContent = `
+        .accordion-button a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            flex-grow: 1;
+        }
+        .accordion-button.no-children::after {
+            content: "";
+        }
+    `;
     document.head.appendChild(style);
 
     initAccordion();
