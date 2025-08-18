@@ -92,15 +92,13 @@ main {
 }
 
 .accordion-panel {
-    padding: 0 20px;
-    background-color: var(--primary-bg);
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    display: none;
+    padding: 15px 20px;
+    background-color: #fafafa; /* Lichte achtergrond voor geopende panelen */
 }
 
-.accordion-panel.show {
-    padding: 15px 20px;
+.accordion-panel.is-open {
+    display: block;
 }
 
 /* Geneste items */
