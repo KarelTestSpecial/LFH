@@ -11,8 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (data.length > 0) {
-                // Start the recursive build from the top level
+                // Build the accordion first
                 buildAccordion(data, container);
+                // Then attach the now-async event listeners
                 attachEventListeners();
             } else {
                 container.innerHTML = '<p>Geen data gevonden.</p>';
@@ -23,42 +24,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- START VAN DE WIJZIGING ---
-
-    // 2. Recursieve functie om de HTML-structuur op te bouwen, nu met pad-informatie.
+    // This function builds the HTML structure, including the links
     function buildAccordion(items, parentElement, currentPath = []) {
         if (!items || items.length === 0) {
             return;
         }
-
         items.forEach(item => {
             const accordionItem = document.createElement('div');
             accordionItem.className = 'accordion-item';
-
             const button = document.createElement('button');
             button.className = 'accordion-button';
 
-            // Creëer het nieuwe pad en de URL
             const newPath = [...currentPath, item.title];
             const pathString = newPath.join(' > ');
             const urlEncodedPath = encodeURIComponent(pathString);
 
-            // Creëer de hyperlink
             const link = document.createElement('a');
             link.textContent = item.title;
+            // The href now contains the raw path string for easy access
             link.href = `topic.html?path=${urlEncodedPath}`;
+            link.dataset.path = pathString; // Store raw path for logic
 
-            // Voeg de link toe aan de knop
             button.appendChild(link);
-
             const panel = document.createElement('div');
             panel.className = 'accordion-panel';
-
             accordionItem.appendChild(button);
             accordionItem.appendChild(panel);
             parentElement.appendChild(accordionItem);
 
-            // De recursieve aanroep met het bijgewerkte pad.
             if (item.children && item.children.length > 0) {
                 buildAccordion(item.children, panel, newPath);
             } else {
@@ -67,21 +60,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Aangepaste event listener om onderscheid te maken tussen klikken.
+    // --- START VAN DE FINALE WIJZIGING ---
+
+    // This function now contains the core routing logic
     function attachEventListeners() {
-        container.addEventListener('click', function(event) {
-            // Als de gebruiker direct op de link klikt, doe dan niets.
-            // De browser zal de navigatie zelf afhandelen.
-            if (event.target.tagName === 'A') {
-                // We hoeven de accordion niet te togglen.
-                return;
+        // The manifest is fetched once and stored for performance
+        let manifest = [];
+        let manifestFetched = false;
+        const fetchManifest = async () => {
+            if (manifestFetched) return manifest;
+            try {
+                const response = await fetch('content-manifest.json');
+                if (!response.ok) throw new Error('Manifest fetch failed');
+                manifest = await response.json();
+                manifestFetched = true;
+                return manifest;
+            } catch (e) {
+                console.error(e);
+                return []; // Return empty on error
+            }
+        };
+        // Pre-fetch the manifest when the page loads
+        fetchManifest();
+
+        container.addEventListener('click', async function(event) {
+            const link = event.target.closest('a');
+
+            if (link) {
+                // --- Link Click Logic ---
+                event.preventDefault(); // Stop navigation immediately
+                const path = link.dataset.path;
+                const manifest = await fetchManifest();
+
+                if (manifest.includes(path)) {
+                    // Path is in manifest, navigate to topic page
+                    window.location.href = link.href;
+                } else {
+                    // Path not in manifest, open search in new tab
+                    const topicTitle = path.split(' > ').pop();
+                    const searchQuery = encodeURIComponent(topicTitle);
+                    const searchUrl = `https://duckduckgo.com/?q=${searchQuery}`;
+                    window.open(searchUrl, '_blank');
+                }
+                return; // End of link logic
             }
 
             const button = event.target.closest('.accordion-button');
-
-            // Als er op de knop (maar niet op de link) is geklikt, toggle de accordeon.
             if (button && !button.classList.contains('no-children')) {
-                event.preventDefault(); // Voorkom onverwacht gedrag
+                // --- Accordion Toggle Logic ---
                 button.classList.toggle('active');
                 const panel = button.nextElementSibling;
                 panel.classList.toggle('is-open');
@@ -89,10 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- EINDE VAN DE WIJZIGING ---
+    // --- EINDE VAN DE FINALE WIJZIGING ---
 
     const style = document.createElement('style');
-    // Voeg stijl toe zodat de link de hele knop vult, maar de plus/min knop apart blijft
     style.textContent = `
         .accordion-button a {
             text-decoration: none;
