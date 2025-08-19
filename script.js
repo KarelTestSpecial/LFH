@@ -97,8 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = link.href;
                 } else {
                     // Path not in manifest, open search in new tab
-                    const topicTitle = path.split(' > ').pop();
-                    const searchQuery = encodeURIComponent(topicTitle);
+                    // NEW: Use the full path for a more specific search query
+                    const keywords = path.replace(/ > /g, ', ');
+                    const searchQuery = encodeURIComponent(keywords);
                     const searchUrl = `https://duckduckgo.com/?q=${searchQuery}`;
                     window.open(searchUrl, '_blank');
                 }
