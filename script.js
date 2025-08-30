@@ -15,6 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 buildAccordion(data, container);
                 // Then attach the now-async event listeners
                 attachEventListeners();
+
+                // --- START VAN DE WIJZIGING ---
+                // Open de eerste (hoofd)node door een klik te simuleren
+                const firstButton = container.querySelector('.accordion-button');
+                if (firstButton) {
+                    firstButton.click();
+                }
+                // --- EINDE VAN DE WIJZIGING ---
             } else {
                 container.innerHTML = '<p>Geen data gevonden.</p>';
             }
