@@ -17,15 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Populate the page with the info from the URL
         document.title = topicTitle;
         topicTitleElement.textContent = topicTitle;
-        breadcrumbContainer.textContent = `Pad: ${decodedPath}`;
+        breadcrumbContainer.textContent = `Path: ${decodedPath}`;
         topicContentElement.innerHTML = `
-            <p>De content voor dit specifieke onderwerp wordt binnenkort toegevoegd.</p>
-            <p>In een toekomstige versie zal hier door AI-gegenereerde informatie verschijnen over <strong>${topicTitle}</strong>.</p>
+            <p>The content for this specific topic will be added soon.</p>
+            <p>In a future version, AI-generated information about <strong>${topicTitle}</strong> will appear here.</p>
         `;
     } else {
         // Handle cases where no path is provided
-        document.title = 'Fout: Onderwerp niet gevonden';
-        topicTitleElement.textContent = 'Onderwerp niet gevonden';
-        topicContentElement.textContent = 'Er is geen onderwerp-pad meegestuurd in de URL.';
+        document.title = 'Error: Topic not found';
+        topicTitleElement.textContent = 'Topic not found';
+        topicContentElement.textContent = 'No topic path was provided in the URL.';
     }
 });
