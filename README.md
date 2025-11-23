@@ -1,14 +1,19 @@
 # Health and Longevity Knowledge Base
 
+**Live Application URL:** [**INSERT YOUR GITHUB PAGES URL HERE**](https://[your-username].github.io/[your-repo-name]/)
+
 This project is a simple web-based application that presents a comprehensive, hierarchical overview of topics related to health and longevity. The information is displayed in an interactive, collapsible accordion format, allowing users to explore the various subjects and their relationships.
 
 ## Usage
 
-To use the application, simply open the `index.html` file in a web browser. The main page displays the health and longevity topics in a nested accordion.
+To use the application, open the `index.html` file in a web browser or visit the live URL above. The main page displays the health and longevity topics in a nested accordion.
 
--   **Expand/Collapse:** Click on any topic to expand or collapse its sub-topics.
--   **View Topic Details:** Click on the title of a topic to navigate to a dedicated page for that topic. (Note: Currently, these pages contain placeholder content).
--   **External Search:** If a topic does not have a dedicated page, clicking on it will open a DuckDuckGo search for that topic in a new tab.
+-   **Expand/Collapse:** Click on a topic's bar to expand or collapse its sub-topics.
+-   **View Topic Details / Search:**
+    -   Click on the `>` button on the right side of any topic to trigger the search/navigation.
+    -   Alternatively, if a topic has no sub-topics, clicking anywhere on its bar will also trigger the search/navigation.
+    -   If the topic has a dedicated content page, you will be navigated to it.
+    -   If not, a DuckDuckGo search for the topic (including its full hierarchical path) will be opened in a new tab.
 
 ## Project Structure
 

@@ -54,6 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
             link.dataset.path = pathString; // Store raw path for logic
 
             button.appendChild(link);
+
+            const searchButton = document.createElement('span');
+            searchButton.className = 'search-button';
+            searchButton.textContent = '>';
+            button.appendChild(searchButton);
             const panel = document.createElement('div');
             panel.className = 'accordion-panel';
             accordionItem.appendChild(button);
@@ -91,35 +96,43 @@ document.addEventListener('DOMContentLoaded', () => {
         // Pre-fetch the manifest when the page loads
         fetchManifest();
 
-        container.addEventListener('click', async function(event) {
-            const link = event.target.closest('a');
+        async function handleSearchOrNavigate(link) {
+            const path = link.dataset.path;
+            const manifest = await fetchManifest();
 
-            if (link) {
-                // --- Link Click Logic ---
-                event.preventDefault(); // Stop navigation immediately
-                const path = link.dataset.path;
-                const manifest = await fetchManifest();
-
-                if (manifest.includes(path)) {
-                    // Path is in manifest, navigate to topic page
-                    window.location.href = link.href;
-                } else {
-                    // Path not in manifest, open search in new tab
-                    // NEW: Use the full path for a more specific search query
-                    const keywords = path.replace(/ > /g, ', ');
-                    const searchQuery = encodeURIComponent(keywords);
-                    const searchUrl = `https://duckduckgo.com/?q=${searchQuery}`;
-                    window.open(searchUrl, '_blank');
-                }
-                return; // End of link logic
+            if (manifest.includes(path)) {
+                window.location.href = link.href;
+            } else {
+                const keywords = path.replace(/ > /g, ', ');
+                const searchQuery = encodeURIComponent(keywords);
+                const searchUrl = `https://duckduckgo.com/?q=${searchQuery}`;
+                window.open(searchUrl, '_blank');
             }
+        }
 
+        container.addEventListener('click', async function(event) {
+            event.preventDefault();
+            const searchButton = event.target.closest('.search-button');
             const button = event.target.closest('.accordion-button');
-            if (button && !button.classList.contains('no-children')) {
-                // --- Accordion Toggle Logic ---
-                button.classList.toggle('active');
-                const panel = button.nextElementSibling;
-                panel.classList.toggle('is-open');
+
+            if (searchButton) {
+                event.stopPropagation(); // Voorkom dat de accordeon ook opent/sluit
+                const link = button.querySelector('a');
+                if (link) {
+                    handleSearchOrNavigate(link);
+                }
+            } else if (button) {
+                if (button.classList.contains('no-children')) {
+                    const link = button.querySelector('a');
+                    if (link) {
+                        handleSearchOrNavigate(link);
+                    }
+                } else {
+                    event.preventDefault(); // Voorkom navigatie
+                    button.classList.toggle('active');
+                    const panel = button.nextElementSibling;
+                    panel.classList.toggle('is-open');
+                }
             }
         });
     }
