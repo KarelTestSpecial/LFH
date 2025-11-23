@@ -135,3 +135,10 @@ main {
         margin-left: 15px;
     }
 }
+
+/* Stijl voor de zoekknop wanneer er geen subitems zijn */
+.accordion-button.no-children .search-button {
+    background-color: var(--primary-bg); /* Witte achtergrond */
+    color: var(--accent-color); /* Blauwe tekst */
+    border: 1px solid var(--accent-color); /* Blauwe rand */
+}
