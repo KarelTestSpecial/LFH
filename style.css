@@ -137,7 +137,7 @@ main {
 }
 
 /* Stijl voor de zoekknop wanneer er geen subitems zijn */
-.no-children .search-button {
+.accordion-button.no-children .search-button {
     background-color: var(--primary-bg); /* Witte achtergrond */
     color: var(--accent-color); /* Blauwe tekst */
     border: 1px solid var(--accent-color); /* Blauwe rand */
