@@ -1,11 +1,11 @@
 /* Algemene stijlen */
 :root {
     --primary-bg: #ffffff;
-    --secondary-bg: #f7f7f7;
-    --header-bg: #2c3e50;
+    --secondary-bg: #f0f4f8;
+    --header-bg: #4a90e2;
     --text-color: #333333;
-    --accent-color: #3498db;
-    --border-color: #dddddd;
+    --accent-color: #50e3c2;
+    --border-color: #d8e2ec;
 }
 
 body {
@@ -76,19 +76,30 @@ main {
 
 .accordion-button:hover, .accordion-button.active {
     background-color: var(--secondary-bg);
+}
+
+.accordion-button:hover a, .accordion-button.active a {
     color: var(--accent-color);
 }
 
-.accordion-button::after {
-    content: '+';
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: var(--accent-color);
-    transition: transform 0.3s ease;
+.search-button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.accordion-button.active::after {
-    transform: rotate(45deg);
+.search-button:hover {
+    background-color: #45c4a8;
 }
 
 .accordion-panel {
