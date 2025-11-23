@@ -96,7 +96,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Pre-fetch the manifest when the page loads
         fetchManifest();
 
+        async function handleSearchOrNavigate(link) {
+            const path = link.dataset.path;
+            const manifest = await fetchManifest();
+
+            if (manifest.includes(path)) {
+                window.location.href = link.href;
+            } else {
+                const keywords = path.replace(/ > /g, ', ');
+                const searchQuery = encodeURIComponent(keywords);
+                const searchUrl = `https://duckduckgo.com/?q=${searchQuery}`;
+                window.open(searchUrl, '_blank');
+            }
+        }
+
         container.addEventListener('click', async function(event) {
+            event.preventDefault();
             const searchButton = event.target.closest('.search-button');
             const button = event.target.closest('.accordion-button');
 
@@ -104,23 +119,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 event.stopPropagation(); // Voorkom dat de accordeon ook opent/sluit
                 const link = button.querySelector('a');
                 if (link) {
-                    const path = link.dataset.path;
-                    const manifest = await fetchManifest();
-
-                    if (manifest.includes(path)) {
-                        window.location.href = link.href;
-                    } else {
-                        const keywords = path.replace(/ > /g, ', ');
-                        const searchQuery = encodeURIComponent(keywords);
-                        const searchUrl = `https://duckduckgo.com/?q=${searchQuery}`;
-                        window.open(searchUrl, '_blank');
-                    }
+                    handleSearchOrNavigate(link);
                 }
-            } else if (button && !button.classList.contains('no-children')) {
-                event.preventDefault(); // Voorkom navigatie
-                button.classList.toggle('active');
-                const panel = button.nextElementSibling;
-                panel.classList.toggle('is-open');
+            } else if (button) {
+                if (button.classList.contains('no-children')) {
+                    const link = button.querySelector('a');
+                    if (link) {
+                        handleSearchOrNavigate(link);
+                    }
+                } else {
+                    event.preventDefault(); // Voorkom navigatie
+                    button.classList.toggle('active');
+                    const panel = button.nextElementSibling;
+                    panel.classList.toggle('is-open');
+                }
             }
         });
     }

@@ -2,9 +2,10 @@
 :root {
     --primary-bg: #ffffff;
     --secondary-bg: #f0f4f8;
-    --header-bg: #4a90e2;
+    --header-bg: #0f6a00;
     --text-color: #333333;
-    --accent-color: #50e3c2;
+    --accent-color: #1f57ba;
+    --link-hover-color: #d700be;
     --border-color: #d8e2ec;
 }
 
@@ -79,7 +80,7 @@ main {
 }
 
 .accordion-button:hover a, .accordion-button.active a {
-    color: var(--accent-color);
+    color: var(--link-hover-color);
 }
 
 .search-button {
@@ -99,7 +100,7 @@ main {
 }
 
 .search-button:hover {
-    background-color: #45c4a8;
+    background-color: #1a4a9c; /* Darker blue */
 }
 
 .accordion-panel {
@@ -115,7 +116,7 @@ main {
 /* Geneste items */
 .accordion-panel > .accordion-item {
     margin-left: 25px;
-    border-left: 2px solid var(--accent-color);
+    border-left: 2px solid var(--link-hover-color);
     margin-top: 10px;
     margin-bottom: 10px;
 }
