@@ -1,6 +1,6 @@
 # Health and Longevity Knowledge Base
 
-**Live Application URL:** [**INSERT YOUR GITHUB PAGES URL HERE**](https://[your-username].github.io/[your-repo-name]/)
+**Live Application URL:** (https://kareltestspecial.github.io/LFH/index.html)
 
 This project is a simple web-based application that presents a comprehensive, hierarchical overview of topics related to health and longevity. The information is displayed in an interactive, collapsible accordion format, allowing users to explore the various subjects and their relationships.
 
